@@ -1,4 +1,4 @@
-from sqlite_to_postgres.dataclasses_models import FilmWork, Genre, Person, FilmWorkGenre, PersonFilmWork
+from dataclasses_models import FilmWork, Genre, Person, FilmWorkGenre, PersonFilmWork
 from dataclasses import astuple
 
 
@@ -25,5 +25,5 @@ class PostgresSaver:
             # Определяем сколько значений нужно вставить в таблицу:  %s * slots_len
             values_count = ", ".join(["%s" for _ in range(len(slots.get(table)))])
             args = ', '.join(self.cursor.mogrify(f"({values_count})", astuple(row)).decode() for row in values)
-            query = """INSERT INTO "content".{}  VALUES {} ON CONFLICT (id) DO NOTHING""".format(table, args)
+            query = """INSERT INTO content.{}  VALUES {} ON CONFLICT (id) DO NOTHING""".format(table, args)
             self.cursor.execute(query)

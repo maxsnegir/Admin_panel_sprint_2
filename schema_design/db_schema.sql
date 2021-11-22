@@ -1,10 +1,6 @@
--- Удаление и создание новой базы
-DROP DATABASE IF EXISTS movies_database;
-CREATE DATABASE movies_database;
-
 -- Создание отдельной схемы
 CREATE SCHEMA IF NOT EXISTS content;
-
+-- SET search_path TO content, public;
 -- Добавление модуля для генерации uuid, если его нет
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -48,7 +44,7 @@ CREATE TABLE IF NOT EXISTS content.genre_film_work(
     created_at timestamp with time zone
 );
 
--- Сощдаем таблицу связывающую персону с фильмом
+-- Создаем таблицу связывающую персону с фильмом
 CREATE TABlE IF NOT EXISTS content.person_film_work(
     id uuid PRIMARY KEY,
     film_work_id uuid REFERENCES content.film_work (id) NOT NULL,
@@ -59,5 +55,5 @@ CREATE TABlE IF NOT EXISTS content.person_film_work(
 
 -- Устанавливаем индекс, для невозможности присвоению фильму несколько одинаковых жанров
 CREATE UNIQUE INDEX IF NOT EXISTS film_work_genre ON content.genre_film_work (film_work_id, genre_id);
--- Устанавливаем индекс, для невозможности присовению фильму актеров, уже снимающихся в этой роли
+-- Устанавливаем индекс, для невозможности присвоения фильму актеров, уже снимающихся в этой роли
 CREATE UNIQUE INDEX IF NOT EXISTS film_work_person_role ON content.person_film_work (film_work_id, person_id, role);
