@@ -11,8 +11,7 @@ services:
       - ./schema_design/db_schema.sql:/docker-entrypoint-initdb.d/db_schema.sql
     expose:
       - 5432
-    ports:
-      - "5432:5432"
+
   web:
     build: .
     depends_on:

@@ -11,14 +11,17 @@ class MoviesApiMixin:
     model = FilmWork
     http_method_names = ['get']
 
+    def __agregate_film_crew(self, role_type: str):
+        return ArrayAgg('person__full_name', filter=Q(personfilmwork__role=role_type), distinct=True)
+
     def get_queryset(self):
         queryset = FilmWork.objects.prefetch_related('genres', 'person')
 
         return queryset.values().annotate(
             genres=ArrayAgg('genres__name', distinct=True),
-            actors=ArrayAgg('person__full_name', filter=Q(personfilmwork__role=RoleType.ACTOR), distinct=True),
-            direcors=ArrayAgg('person__full_name', filter=Q(personfilmwork__role=RoleType.DIRECTOR), distinct=True),
-            writers=ArrayAgg('person__full_name', filter=Q(personfilmwork__role=RoleType.WRITER), distinct=True),
+            actors=self.__agregate_film_crew(RoleType.ACTOR),
+            direcors=self.__agregate_film_crew(RoleType.DIRECTOR),
+            writers=self.__agregate_film_crew(RoleType.WRITER),
         )
 
     def render_to_response(self, context, **response_kwargs):
